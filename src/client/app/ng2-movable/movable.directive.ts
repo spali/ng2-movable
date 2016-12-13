@@ -5,12 +5,28 @@ import {
 import { MovableHandleDirective } from './movablehandle.directive';
 
 export class Position {
-  constructor(public Y: number, public X: number) { }
-  public minusPosition(position: Position) {
-    return new Position(this.Y - position.Y, this.X - position.X);
+  public clientY: number;
+  public clientX: number;
+  constructor(event: Position | Event | ElementRef | number, posX?: number) {
+    if (event instanceof Position) {
+      this.clientY = event.clientY;
+      this.clientX = event.clientX;
+    } else if (event instanceof ElementRef) {
+      this.clientY = event.nativeElement.style.top.replace('px', '');
+      this.clientX = event.nativeElement.style.left.replace('px', '');
+    } else if (event instanceof MouseEvent) {
+      this.clientY = event.clientY;
+      this.clientX = event.clientX;
+    } else if (typeof event === 'number' && posX) {
+      this.clientY = event;
+      this.clientX = posX;
+    } else if ((<any>event).changedTouches && (<any>event).changedTouches.length > 0) {
+      this.clientY = (<any>event).changedTouches[0].clientY;
+      this.clientX = (<any>event).changedTouches[0].clientX;
+    }
   }
-  public minus(Y: number, X: number) {
-    return new Position(this.Y - Y, this.X - X);
+  public minus(position: Position) {
+    return new Position(this.clientY - position.clientY, this.clientX - position.clientX);
   }
 }
 
@@ -103,7 +119,8 @@ export class MovableDirective implements AfterContentInit {
   }
 
   @HostListener('touchstart', ['$event'])
-  protected onTouchStart(event: TouchEvent) {
+  protected onTouchStart(event: Event) {
+
     this.startMoving(event);
   }
 
@@ -114,16 +131,13 @@ export class MovableDirective implements AfterContentInit {
 
   // using document to move even pointer leaves the host (fast moving)
   @HostListener('document:touchmove', ['$event'])
-  protected onTouchMove(event: TouchEvent) {
+  protected onTouchMove(event: Event) {
     this.moveElement(event);
   }
 
-  protected startMoving(event: TouchEvent | MouseEvent) {
+  protected startMoving(event: Event) {
     if (this.isEventInHandle(event) && this.movableEnabled) {
-      this.startPosition = this.getPosition(event).minus(
-        this.element.nativeElement.style.top.replace('px', ''),
-        this.element.nativeElement.style.left.replace('px', '')
-      );
+      this.startPosition = new Position(event).minus(new Position(this.element));
       this.isMoving = true;
       if (this.handles.length > 0) {
         this.handles.forEach(handle => handle.isMoving = true);
@@ -143,24 +157,12 @@ export class MovableDirective implements AfterContentInit {
   /**
    * update host position for the specific event when moving.
    */
-  protected moveElement(event: TouchEvent | MouseEvent) {
+  protected moveElement(event: Event) {
     if (this.isMoving) {
-      var newPosition = this.getPosition(event).minusPosition(this.startPosition);
-      this.element.nativeElement.style.top = newPosition.Y + 'px';
-      this.element.nativeElement.style.left = newPosition.X + 'px';
+      var newPosition = new Position(event).minus(this.startPosition);
+      this.element.nativeElement.style.top = newPosition.clientY + 'px';
+      this.element.nativeElement.style.left = newPosition.clientX + 'px';
     }
-  }
-
-  /**
-   * returns the event specific position.
-   */
-  protected getPosition(event: TouchEvent | MouseEvent) {
-    if (event instanceof TouchEvent) {
-      return new Position(event.changedTouches[0].clientY, event.changedTouches[0].clientX);
-    } else if (event instanceof MouseEvent) {
-      return new Position(event.clientY, event.clientX);
-    }
-    throw new Error(typeof event + ' not implemented');
   }
 
   /**
