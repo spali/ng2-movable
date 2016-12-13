@@ -1,0 +1,33 @@
+
+/** if an element supports movable (movable directive>). */
+.movable {
+  display: inline-block;
+  border: 0.2em dotted black;
+}
+
+/** the movable style during moving. */
+.movable.movable-enabled.movable-moving {
+  opacity: 0.5;
+}
+
+/** if movable is enabled on the movable (host's movableEnabled attribute). */
+.movable.movable-enabled {
+  border: 0.2em solid black;
+}
+
+/** the movable handle style. */
+.movable-handle  {
+  border: 0.2em dotted black;
+}
+
+/** the movable handle style if movable is enabled. */
+.movable-handle.movable-enabled {
+  cursor: pointer;
+  border: 0.2em solid black;
+}
+
+/** the movable handle style when the movable is currently moving. */
+.movable-handle.movable-enabled.movable-moving {
+  cursor: move;
+  border: 0.2em solid red;
+}

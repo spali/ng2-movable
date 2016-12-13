@@ -1,0 +1,7 @@
+{
+  "extends": "./tools/config/seed.tslint.json",
+  "rulesDirectory": ["./node_modules/tslint-eslint-rules/dist/rules"],
+  "rules": {
+    "valid-jsdoc": "error"
+  }
+}
