@@ -4,29 +4,39 @@ import {
 } from '@angular/core';
 import { MovableHandleDirective } from './movablehandle.directive';
 
+// workaround to prevent error in MS Edge
+type xTouchEvent = { changedTouches: { clientY: number, clientX: number }[], srcElement: Element };
+
+type Coordinates = { clientY: number, clientX: number };
+type Positions = Coordinates | MouseEvent | xTouchEvent;
+
+
 export class Position {
   public clientY: number;
   public clientX: number;
-  constructor(event: Position | Event | ElementRef | number, posX?: number) {
-    if (event instanceof Position) {
-      this.clientY = event.clientY;
-      this.clientX = event.clientX;
-    } else if (event instanceof ElementRef) {
-      this.clientY = event.nativeElement.style.top.replace('px', '');
-      this.clientX = event.nativeElement.style.left.replace('px', '');
-    } else if (event instanceof MouseEvent) {
-      this.clientY = event.clientY;
-      this.clientX = event.clientX;
-    } else if (typeof event === 'number' && posX) {
-      this.clientY = event;
-      this.clientX = posX;
-    } else if ((<any>event).changedTouches && (<any>event).changedTouches.length > 0) {
-      this.clientY = (<any>event).changedTouches[0].clientY;
-      this.clientX = (<any>event).changedTouches[0].clientX;
+
+  constructor(pos?: Positions) {
+    if (pos instanceof MouseEvent) {
+      this.clientY = pos.clientY;
+      this.clientX = pos.clientX;
+    } else if (pos
+      && ((<Coordinates>pos).clientY || pos.hasOwnProperty('clientY'))
+      && ((<Coordinates>pos).clientX) || pos.hasOwnProperty('clientX')) {
+      this.clientY = (<Coordinates>pos).clientY;
+      this.clientX = (<Coordinates>pos).clientX;
+    } else if (pos
+      && (<xTouchEvent>pos).changedTouches
+      && (<xTouchEvent>pos).changedTouches.length > 0
+      && (<xTouchEvent>pos).changedTouches[0]
+      && (<xTouchEvent>pos).changedTouches[0].clientY
+      && (<xTouchEvent>pos).changedTouches[0].clientX) {
+      this.clientY = (<xTouchEvent>pos).changedTouches[0].clientY;
+      this.clientX = (<xTouchEvent>pos).changedTouches[0].clientX;
     }
   }
-  public minus(position: Position) {
-    return new Position(this.clientY - position.clientY, this.clientX - position.clientX);
+
+  public minus(position: Position | Coordinates) {
+    return new Position({ clientY: (this.clientY - position.clientY), clientX: (this.clientX - position.clientX) });
   }
 }
 
@@ -48,6 +58,14 @@ export class MovableDirective implements AfterContentInit {
   /** set position style on host to relative. */
   @HostBinding('style.position')
   protected positionStyle: string = 'relative';
+
+  /** current Y position of the native element. */
+  @HostBinding('style.top.px')
+  public positionTop: number;
+
+  /** current X position of the native element. */
+  @HostBinding('style.left.px')
+  protected positionLeft: number;
 
   /** set class on host to indicate movable support. */
   @HostBinding('class.movable')
@@ -108,7 +126,7 @@ export class MovableDirective implements AfterContentInit {
   }
 
   @HostListener('document:mouseup')
-  protected onMouseUp() {
+  protected onMouseUp(event: MouseEvent) {
     this.stopMoving();
   }
 
@@ -119,25 +137,25 @@ export class MovableDirective implements AfterContentInit {
   }
 
   @HostListener('touchstart', ['$event'])
-  protected onTouchStart(event: Event) {
-
+  protected onTouchStart(event: xTouchEvent) {
     this.startMoving(event);
   }
 
   @HostListener('document:touchend')
-  protected onTouchEnd() {
+  protected onTouchEnd(event: xTouchEvent) {
     this.stopMoving();
   }
 
   // using document to move even pointer leaves the host (fast moving)
   @HostListener('document:touchmove', ['$event'])
-  protected onTouchMove(event: Event) {
+  protected onTouchMove(event: xTouchEvent) {
     this.moveElement(event);
   }
 
-  protected startMoving(event: Event) {
+  protected startMoving(event: xTouchEvent | MouseEvent) {
     if (this.isEventInHandle(event) && this.movableEnabled) {
-      this.startPosition = new Position(event).minus(new Position(this.element));
+      this.startPosition = new Position(event)
+        .minus({ clientY: (this.positionTop || 0), clientX: (this.positionLeft || 0) });
       this.isMoving = true;
       if (this.handles.length > 0) {
         this.handles.forEach(handle => handle.isMoving = true);
@@ -157,18 +175,18 @@ export class MovableDirective implements AfterContentInit {
   /**
    * update host position for the specific event when moving.
    */
-  protected moveElement(event: Event) {
+  protected moveElement(event: xTouchEvent | MouseEvent) {
     if (this.isMoving) {
       var newPosition = new Position(event).minus(this.startPosition);
-      this.element.nativeElement.style.top = newPosition.clientY + 'px';
-      this.element.nativeElement.style.left = newPosition.clientX + 'px';
+      this.positionTop = newPosition.clientY;
+      this.positionLeft = newPosition.clientX;
     }
   }
 
   /**
    * checks if the event occured inside the handle element.
    */
-  protected isEventInHandle(event: Event) {
+  protected isEventInHandle(event: xTouchEvent | MouseEvent) {
     if (this.isHandle) {
       var srcElement = event.srcElement;
       // check parent elements too.
