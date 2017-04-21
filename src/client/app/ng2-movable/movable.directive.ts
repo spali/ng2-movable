@@ -156,8 +156,14 @@ export class MovableDirective implements AfterContentInit {
     if (this.isEventInHandle(event) && this.movableEnabled) {
       this.startPosition = new Position(event)
         .minus({
-          clientY: (this.positionTop || this.element.nativeElement.offsetTop - this.element.nativeElement.parentElement.offsetTop),
-          clientX: (this.positionLeft || this.element.nativeElement.offsetLeft - this.element.nativeElement.parentElement.offsetLeft)
+          clientY: (this.positionTop ||
+            ((this.element.nativeElement.parentElement.style.position === 'relative') ?
+            0 : this.element.nativeElement.offsetTop - this.element.nativeElement.parentElement.offsetTop)
+          ),
+          clientX: (this.positionLeft ||
+             ((this.element.nativeElement.parentElement.style.position === 'relative') ?
+             0 : this.element.nativeElement.offsetLeft - this.element.nativeElement.parentElement.offsetLeft)
+          )
         });
       this.isMoving = true;
       if (this.handles.length > 0) {
