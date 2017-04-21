@@ -1,18 +1,21 @@
 /* Reset */
-html,
-body,
-div {
+
+html, body, div {
   border: 0;
   margin: 0;
   padding: 0;
 }
 
+
 /* Box-sizing border-box */
+
 * {
   box-sizing: border-box;
 }
 
+
 /* Set up a default font and some padding to provide breathing room */
+
 body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   font-size: 16px;
@@ -60,4 +63,9 @@ button {
 
 button:hover {
   background-color: #28739e;
+}
+
+.relativpos {
+  top: 20px;
+  left: 20px;
 }

@@ -26,6 +26,11 @@ const templates = [
   Only the handle element can be used for moving.<br />
   <button (click)="toggle = !toggle">toggle enabled state</button>
 </div>`,
+  `<div class="relativpos" movable [movableEnabled]="toggle">
+    <div><b>Simple movable with relativ start position by class</b></div>
+    The complete element can be used for moving.<br />
+    <button (click)="toggle = !toggle">toggle enabled state</button>
+</div>`,
 ];
 
 @Component({
