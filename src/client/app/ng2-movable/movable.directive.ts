@@ -5,11 +5,11 @@ import {
 import { MovableHandleDirective } from './movablehandle.directive';
 
 // workaround to prevent error in MS Edge
-interface ITouchEvent extends UIEvent {
+export interface ITouchEvent extends UIEvent {
   changedTouches: { clientY: number, clientX: number }[];
 };
-type Coordinates = { clientY: number, clientX: number };
-type Positions = Coordinates | ITouchEvent;
+export type Coordinates = { clientY: number, clientX: number };
+export type Positions = Coordinates | ITouchEvent;
 
 
 export class Position {
