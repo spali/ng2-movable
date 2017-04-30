@@ -158,11 +158,11 @@ export class MovableDirective implements AfterContentInit {
         .minus({
           clientY: (this.positionTop ||
             ((this.element.nativeElement.parentElement.style.position === 'relative') ?
-            0 : this.element.nativeElement.offsetTop - this.element.nativeElement.parentElement.offsetTop)
+              0 : this.element.nativeElement.offsetTop - this.element.nativeElement.parentElement.offsetTop)
           ),
           clientX: (this.positionLeft ||
-             ((this.element.nativeElement.parentElement.style.position === 'relative') ?
-             0 : this.element.nativeElement.offsetLeft - this.element.nativeElement.parentElement.offsetLeft)
+            ((this.element.nativeElement.parentElement.style.position === 'relative') ?
+              0 : this.element.nativeElement.offsetLeft - this.element.nativeElement.parentElement.offsetLeft)
           )
         });
       this.isMoving = true;
@@ -184,11 +184,21 @@ export class MovableDirective implements AfterContentInit {
   /**
    * update host position for the specific event when moving.
    */
-  protected moveElement(event: ITouchEvent | MouseEvent) {
+  protected moveElement(event: ITouchEvent | MouseEvent): void {
     if (this.isMoving) {
-      var newPosition = new Position(event).minus(this.startPosition);
+      let top = this.positionTop;
+      let left = this.positionLeft;
+
+      let newPosition = new Position(event).minus(this.startPosition);
       this.positionTop = newPosition.clientY;
       this.positionLeft = newPosition.clientX;
+      
+      this.cd.detectChanges();
+
+      if (!this.isMovableInsideBumper()) {
+        this.positionTop = top;
+        this.positionLeft = left;
+      }
     }
     this.cd.detectChanges();
   }
@@ -196,7 +206,7 @@ export class MovableDirective implements AfterContentInit {
   /**
    * checks if the event occured inside the handle element.
    */
-  protected isEventInHandle(event: ITouchEvent | MouseEvent) {
+  protected isEventInHandle(event: ITouchEvent | MouseEvent): boolean {
     if (this.isHandle) {
       var srcElement = event.srcElement;
       // check parent elements too.
@@ -214,6 +224,35 @@ export class MovableDirective implements AfterContentInit {
         return handle.element.nativeElement === srcElement;
       });
     }
+  }
+
+  /**
+  * checks if the move occured inside the bumper element.
+  */
+  protected isMovableInsideBumper(): boolean {
+    let srcElement = this.element.nativeElement;
+    let movableRect = srcElement.getBoundingClientRect();
+    let bumperRect = this.getBumperRectangle();
+    if (bumperRect) {
+      return (movableRect.left >= bumperRect.left
+        && movableRect.right <= bumperRect.right)
+        && (movableRect.top >= bumperRect.top
+          && movableRect.bottom <= bumperRect.bottom)
+    }
+    // no bumper let the movable float around
+    return true;
+  }
+
+  private getBumperRectangle(): ClientRect {
+    let srcElement = this.element.nativeElement;
+    let bumperRect = null;
+    while (srcElement.parentElement) {
+      srcElement = srcElement.parentElement;
+      if (srcElement.classList.contains("movable-bumper")) {
+        bumperRect = srcElement.getBoundingClientRect();
+      }
+    }
+    return bumperRect;
   }
 
 }
