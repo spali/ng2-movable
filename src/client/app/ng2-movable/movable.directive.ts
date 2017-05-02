@@ -108,7 +108,7 @@ export class MovableDirective implements AfterContentInit {
     this.updateQuery(this.allHandles);
   }
 
-  protected updateQuery(handles: QueryList<MovableHandleDirective>) {
+  protected updateQuery(handles: QueryList<MovableHandleDirective>): void {
     this.handles = handles.filter(handle => handle.movableHandle === this.movableName);
     // fallback to this as handle if not specified
     if (this.handles.length === 0) {
@@ -152,17 +152,17 @@ export class MovableDirective implements AfterContentInit {
     this.moveElement(event);
   }
 
-  protected startMoving(event: ITouchEvent | MouseEvent) {
+  protected startMoving(event: ITouchEvent | MouseEvent): void {
     if (this.isEventInHandle(event) && this.movableEnabled) {
       this.startPosition = new Position(event)
         .minus({
           clientY: (this.positionTop ||
             ((this.element.nativeElement.parentElement.style.position === 'relative') ?
-            0 : this.element.nativeElement.offsetTop - this.element.nativeElement.parentElement.offsetTop)
+              0 : this.element.nativeElement.offsetTop - this.element.nativeElement.parentElement.offsetTop)
           ),
           clientX: (this.positionLeft ||
-             ((this.element.nativeElement.parentElement.style.position === 'relative') ?
-             0 : this.element.nativeElement.offsetLeft - this.element.nativeElement.parentElement.offsetLeft)
+            ((this.element.nativeElement.parentElement.style.position === 'relative') ?
+              0 : this.element.nativeElement.offsetLeft - this.element.nativeElement.parentElement.offsetLeft)
           )
         });
       this.isMoving = true;
@@ -173,7 +173,7 @@ export class MovableDirective implements AfterContentInit {
     }
   }
 
-  protected stopMoving() {
+  protected stopMoving(): void {
     this.isMoving = false;
     if (this.handles.length > 0) {
       this.handles.forEach(handle => handle.isMoving = false);
@@ -184,11 +184,15 @@ export class MovableDirective implements AfterContentInit {
   /**
    * update host position for the specific event when moving.
    */
-  protected moveElement(event: ITouchEvent | MouseEvent) {
+  protected moveElement(event: ITouchEvent | MouseEvent): void {
     if (this.isMoving) {
       var newPosition = new Position(event).minus(this.startPosition);
-      this.positionTop = newPosition.clientY;
-      this.positionLeft = newPosition.clientX;
+      this.positionTop = newPosition.clientY ||
+        ((this.element.nativeElement.parentElement.style.position === 'relative') ?
+          0 : this.element.nativeElement.offsetTop - this.element.nativeElement.parentElement.offsetTop);
+      this.positionLeft = newPosition.clientX ||
+        ((this.element.nativeElement.parentElement.style.position === 'relative') ?
+          0 : this.element.nativeElement.offsetLeft - this.element.nativeElement.parentElement.offsetLeft);
     }
     this.cd.detectChanges();
   }
@@ -196,7 +200,7 @@ export class MovableDirective implements AfterContentInit {
   /**
    * checks if the event occured inside the handle element.
    */
-  protected isEventInHandle(event: ITouchEvent | MouseEvent) {
+  protected isEventInHandle(event: ITouchEvent | MouseEvent): boolean {
     if (this.isHandle) {
       var srcElement = event.srcElement;
       // check parent elements too.
