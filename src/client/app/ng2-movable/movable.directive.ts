@@ -78,6 +78,13 @@ export class MovableDirective implements AfterContentInit {
     return this._movableEnabled;
   };
 
+  /** optional containment element id. */
+ protected _constrainedBy: string;
+  @Input()
+  protected set constrainedBy(value: string) {
+    this._constrainedBy = value;
+  }
+
   /** optional input to toggle movable status. */
   @Input()
   protected set movableEnabled(value: boolean) {
@@ -195,7 +202,7 @@ export class MovableDirective implements AfterContentInit {
       
       this.cd.detectChanges();
 
-      if (!this.isMovableInsideBumper()) {
+      if (!this.isMovableContained()) {
         this.positionTop = top;
         this.positionLeft = left;
       }
@@ -229,30 +236,23 @@ export class MovableDirective implements AfterContentInit {
   /**
   * checks if the move occured inside the bumper element.
   */
-  protected isMovableInsideBumper(): boolean {
+  protected isMovableContained(): boolean {
     let srcElement = this.element.nativeElement;
-    let movableRect = srcElement.getBoundingClientRect();
-    let bumperRect = this.getBumperRectangle();
-    if (bumperRect) {
-      return (movableRect.left >= bumperRect.left
-        && movableRect.right <= bumperRect.right)
-        && (movableRect.top >= bumperRect.top
-          && movableRect.bottom <= bumperRect.bottom)
+    let constraint = this.getConstrainingDiv();
+    let movableRec = srcElement.getBoundingClientRect();
+    if (constraint) {
+      return (movableRec.left >= constraint.left
+        && movableRec.right <= constraint.right)
+        && (movableRec.top >= constraint.top
+        && movableRec.bottom <= constraint.bottom)
     }
     // no bumper let the movable float around
     return true;
   }
 
-  private getBumperRectangle(): ClientRect {
-    let srcElement = this.element.nativeElement;
-    let bumperRect = null;
-    while (srcElement.parentElement) {
-      srcElement = srcElement.parentElement;
-      if (srcElement.classList.contains("movable-bumper")) {
-        bumperRect = srcElement.getBoundingClientRect();
-      }
-    }
-    return bumperRect;
+  private getConstrainingDiv(): ClientRect {
+    let el : HTMLElement = document.getElementById(this._constrainedBy);
+    return el.getBoundingClientRect();
   }
 
 }
