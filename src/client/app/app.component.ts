@@ -10,11 +10,11 @@ import * as hljs from 'highlight.js';
 import { MovableModule } from './ng2-movable/index';
 
 const templates = [
-  `<div movable [movableEnabled]="toggle">
+  `<div id="bumper"><div movable constrainedBy="bumper" [movableEnabled]="toggle">
     <div><b>Simple movable</b></div>
     The complete element can be used for moving.<br />
     <button (click)="toggle = !toggle">toggle enabled state</button>
-</div>`,
+  </div></div>`,
   `<div movable [movableEnabled]="toggle">
   <div movableHandle><b>Movable with handle</b></div>
   Only the handle element can be used for moving.<br />

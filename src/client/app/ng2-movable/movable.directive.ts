@@ -78,6 +78,13 @@ export class MovableDirective implements AfterContentInit {
     return this._movableEnabled;
   };
 
+  /** optional containment element id. */
+ protected _constrainedBy: string;
+  @Input()
+  protected set constrainedBy(value: string) {
+    this._constrainedBy = value;
+  }
+
   /** optional input to toggle movable status. */
   @Input()
   protected set movableEnabled(value: boolean) {
@@ -186,13 +193,23 @@ export class MovableDirective implements AfterContentInit {
    */
   protected moveElement(event: ITouchEvent | MouseEvent): void {
     if (this.isMoving) {
-      var newPosition = new Position(event).minus(this.startPosition);
+      let top = this.positionTop;
+      let left = this.positionLeft;
+
+      let newPosition = new Position(event).minus(this.startPosition);
       this.positionTop = newPosition.clientY ||
         ((this.element.nativeElement.parentElement.style.position === 'relative') ?
           0 : this.element.nativeElement.offsetTop - this.element.nativeElement.parentElement.offsetTop);
       this.positionLeft = newPosition.clientX ||
         ((this.element.nativeElement.parentElement.style.position === 'relative') ?
           0 : this.element.nativeElement.offsetLeft - this.element.nativeElement.parentElement.offsetLeft);
+      
+      this.cd.detectChanges();
+
+      if (!this.isMovableContained()) {
+        this.positionTop = top;
+        this.positionLeft = left;
+      }
     }
     this.cd.detectChanges();
   }
@@ -218,6 +235,28 @@ export class MovableDirective implements AfterContentInit {
         return handle.element.nativeElement === srcElement;
       });
     }
+  }
+
+  /**
+  * checks if the move occured inside the bumper element.
+  */
+  protected isMovableContained(): boolean {
+    let srcElement = this.element.nativeElement;
+    let constraint = this.getConstrainingDiv();
+    let movableRec = srcElement.getBoundingClientRect();
+    if (constraint) {
+      return (movableRec.left >= constraint.left
+        && movableRec.right <= constraint.right)
+        && (movableRec.top >= constraint.top
+        && movableRec.bottom <= constraint.bottom)
+    }
+    // no bumper let the movable float around
+    return true;
+  }
+
+  private getConstrainingDiv(): ClientRect {
+    let el : HTMLElement = document.getElementById(this._constrainedBy);
+    return el.getBoundingClientRect();
   }
 
 }
