@@ -9,29 +9,7 @@ import * as hljs from 'highlight.js';
 
 import { MovableModule } from './ng2-movable/index';
 
-const templates = [
-  `<div movable [movableEnabled]="toggle">
-    <div><b>Simple movable</b></div>
-    The complete element can be used for moving.<br />
-    <button (click)="toggle = !toggle">toggle enabled state</button>
-</div>`,
-  `<div movable [movableEnabled]="toggle">
-  <div movableHandle><b>Movable with handle</b></div>
-  Only the handle element can be used for moving.<br />
-  <button (click)="toggle = !toggle">toggle enabled state</button>
-</div>`,
-  `<div movable [movableEnabled]="toggle">
-  <div movableHandle><b>Movable with handle</b></div>
-  <div movable="handle2"><div movableHandle="handle2">another handle</div>another movable</div>
-  Only the handle element can be used for moving.<br />
-  <button (click)="toggle = !toggle">toggle enabled state</button>
-</div>`,
-  `<div class="relativpos" movable [movableEnabled]="toggle">
-    <div><b>Simple movable with relativ start position by class</b></div>
-    The complete element can be used for moving.<br />
-    <button (click)="toggle = !toggle">toggle enabled state</button>
-</div>`,
-];
+
 
 @Component({
   moduleId: module.id,
@@ -40,6 +18,38 @@ const templates = [
   styleUrls: ['app.component.css']
 })
 export class AppComponent implements AfterViewInit {
+
+  protected templates = [
+    { title: 'Simple example',
+      code: `<div movable [movableEnabled]="toggle">
+        <div><b>Simple movable</b></div>
+        The complete element can be used for moving.<br />
+        <button (click)="toggle = !toggle">toggle enabled state</button>
+    </div>`
+  },
+  { title: 'Handle Example',
+    code: `<div movable [movableEnabled]="toggle">
+      <div movableHandle><b>Movable with handle</b></div>
+      Only the handle element can be used for moving.<br />
+      <button (click)="toggle = !toggle">toggle enabled state</button>
+    </div>`
+  },
+  { title: 'Handle Example 2',
+    code: `<div movable [movableEnabled]="toggle">
+      <div movableHandle><b>Movable with handle</b></div>
+      <div movable="handle2"><div movableHandle="handle2">another handle</div>another movable</div>
+      Only the handle element can be used for moving.<br />
+      <button (click)="toggle = !toggle">toggle enabled state</button>
+    </div>`
+  },
+  { title: 'Relativ start position Example',
+    code: `<div class="relativpos" movable [movableEnabled]="toggle">
+      <div><b>Simple movable with relativ start position by class</b></div>
+      The complete element can be used for moving.<br />
+      <button (click)="toggle = !toggle">toggle enabled state</button>
+    </div>`
+  },
+];
 
   protected componentRef: ComponentRef<any>;
   public movable = new BehaviorSubject<number>(1);
@@ -51,7 +61,7 @@ export class AppComponent implements AfterViewInit {
     this.movable
       .subscribe(id => {
         this.vcRef.clear();
-        var code = templates[id - 1] || templates[0];
+        var code = this.templates[id - 1].code || this.templates[0].code;
         var component = this.createDynamicComponent(code);
         var module = this.createDynamicModule(component);
         this.compiler.compileModuleAndAllComponentsAsync(module)
