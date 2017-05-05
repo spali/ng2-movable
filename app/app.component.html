@@ -1,0 +1,8 @@
+<div class="header">
+  <h1>ng2-movable</h1>
+</div>
+<nav>
+  <template ngFor let-template [ngForOf]="templates" let-i="index + 1">
+    <a (click)="movable.next(i )" [class.active]="(movable | async) === (i)">{{template.title}}</a>
+  </template>
+</nav>
