@@ -1,23 +1,93 @@
-/* Reset */
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: .5em;
+  color: #abb2bf;
+  background: #282c34;
+}
 
-html, body, div {
+.hljs-comment,
+.hljs-quote {
+  color: #5c6370;
+  font-style: italic;
+}
+
+.hljs-doctag,
+.hljs-formula,
+.hljs-keyword {
+  color: #c678dd;
+}
+
+.hljs-deletion,
+.hljs-name,
+.hljs-section,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #e06c75;
+}
+
+.hljs-literal {
+  color: #56b6c2;
+}
+
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta-string,
+.hljs-regexp,
+.hljs-string {
+  color: #98c379;
+}
+
+.hljs-built_in,
+.hljs-class .hljs-title {
+  color: #e6c07b;
+}
+
+.hljs-attr,
+.hljs-number,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-pseudo,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable {
+  color: #d19a66;
+}
+
+.hljs-bullet,
+.hljs-link,
+.hljs-meta,
+.hljs-selector-id,
+.hljs-symbol,
+.hljs-title {
+  color: #61aeee;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 700;
+}
+
+.hljs-link {
+  text-decoration: underline;
+}
+body,
+div,
+html {
   border: 0;
   margin: 0;
   padding: 0;
 }
 
-
-/* Box-sizing border-box */
-
 * {
   box-sizing: border-box;
 }
 
-
-/* Set up a default font and some padding to provide breathing room */
-
 body {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto,Helvetica Neue,sans-serif;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -25,7 +95,7 @@ body {
 
 p {
   font-weight: 400;
-  letter-spacing: 0.01em;
+  letter-spacing: .01em;
   line-height: 20px;
   margin-bottom: 1em;
   margin-top: 1em;
@@ -43,20 +113,22 @@ li {
 
 input {
   border: 1px solid #106cc8;
-  font-size: 14px;
-  height: 40px;
   outline: none;
   padding: 8px;
+}
+
+button,
+input {
+  font-size: 14px;
+  height: 40px;
 }
 
 button {
   background-color: #106cc8;
   border-style: none;
-  color: rgba(255, 255, 255, 0.87);
+  color: hsla(0,0%,100%,.87);
   cursor: pointer;
   display: inline-block;
-  font-size: 14px;
-  height: 40px;
   padding: 8px 18px;
   text-decoration: none;
 }
@@ -68,4 +140,30 @@ button:hover {
 .relativpos {
   top: 20px;
   left: 20px;
+}
+.movable {
+  display: inline-block;
+  border: .2em dotted #000;
+}
+
+.movable.movable-enabled.movable-moving {
+  opacity: .5;
+}
+
+.movable.movable-enabled {
+  border: .2em solid #000;
+}
+
+.movable-handle {
+  border: .2em dotted #000;
+}
+
+.movable-handle.movable-enabled {
+  cursor: pointer;
+  border: .2em solid #000;
+}
+
+.movable-handle.movable-enabled.movable-moving {
+  cursor: move;
+  border: .2em solid red;
 }
