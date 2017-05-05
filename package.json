@@ -37,6 +37,7 @@
     "deploy.prod": "gulp deploy.prod --color --env-config prod --build-type prod",
     "pack.module": "gulp build.module --color --env-config prod --build-type prod && npm pack dist/module",
     "publish.module": "gulp build.module --color --env-config prod --build-type prod && npm publish dist/module",
+    "publish.dev.module": "gulp build.module --color --env-config prod --build-type prod && npm publish --tag dev dist/module",
     "build.test": "gulp build.test --color",
     "test.watch": "gulp test.watch --color",
     "generate.manifest": "gulp generate.manifest --color",
