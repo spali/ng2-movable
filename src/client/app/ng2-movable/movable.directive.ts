@@ -100,7 +100,7 @@ export class MovableDirective implements AfterViewInit, AfterContentInit {
 
   /** current Y position of the native element. */
   @HostBinding('style.top.px')
-  public positionTop: number;
+  protected positionTop: number;
 
   /** current X position of the native element. */
   @HostBinding('style.left.px')
