@@ -290,18 +290,17 @@ export class MovableDirective implements AfterViewInit, AfterContentInit {
    * checks if the event occured inside the handle element.
    */
   protected isEventInHandle(event: ITouchEvent | MouseEvent): boolean {
+    var srcElement = event.target || event.srcElement;
     if (this.isHandle) {
-      var srcElement = event.srcElement;
       // check parent elements too.
-      while (srcElement !== this.element.nativeElement && srcElement.parentElement) {
+      while (srcElement instanceof HTMLElement && srcElement !== this.element.nativeElement && srcElement.parentElement) {
         srcElement = srcElement.parentElement;
       }
       return this.element.nativeElement === srcElement;
     } else {
       return this.handles.some(handle => {
-        var srcElement = event.srcElement;
         // check parent elements too.
-        while (srcElement !== handle.element.nativeElement && srcElement.parentElement) {
+        while (srcElement instanceof HTMLElement && srcElement !== handle.element.nativeElement && srcElement.parentElement) {
           srcElement = srcElement.parentElement;
         }
         return handle.element.nativeElement === srcElement;
