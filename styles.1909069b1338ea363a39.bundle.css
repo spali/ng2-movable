@@ -1,0 +1,43 @@
+/* Reset */body,div,html{border:0;margin:0;padding:0}
+
+
+/* Box-sizing border-box */*{box-sizing:border-box}
+
+
+/* Set up a default font and some padding to provide breathing room */body{font-family:Roboto,Helvetica Neue,sans-serif;font-size:16px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}p{font-weight:400;letter-spacing:.01em;line-height:20px;margin-bottom:1em;margin-top:1em}ul{margin:10px 0 0;padding:0 0 0 20px}li{font-weight:400;margin-top:4px}input{border:1px solid #106cc8;outline:none;padding:8px}button,input{font-size:14px;height:40px}button{background-color:#106cc8;border-style:none;color:hsla(0,0%,100%,.87);cursor:pointer;display:inline-block;padding:8px 18px;text-decoration:none}button:hover{background-color:#28739e}.relativpos{top:20px;left:20px}
+
+
+/** if an element supports movable (movable directive>). */.movable{display:inline-block;border:.2em dotted #000}
+
+
+/** the movable style during moving. */.movable.movable-enabled.movable-moving{opacity:.5}
+
+
+/** if movable is enabled on the movable (host's movableEnabled attribute). */.movable.movable-enabled{border:.2em solid #000}
+
+
+/** the movable handle style. */.movable-handle{border:.2em dotted #000}
+
+
+/** the movable handle style if movable is enabled. */.movable-handle.movable-enabled{cursor:pointer;border:.2em solid #000}
+
+
+/** the movable handle style when the movable is currently moving. */.movable-handle.movable-enabled.movable-moving{cursor:move;border:.2em solid red}/*
+
+Atom One Dark by Daniel Gamage
+Original One Dark Syntax theme from https://github.com/atom/one-dark-syntax
+
+base:    #282c34
+mono-1:  #abb2bf
+mono-2:  #818896
+mono-3:  #5c6370
+hue-1:   #56b6c2
+hue-2:   #61aeee
+hue-3:   #c678dd
+hue-4:   #98c379
+hue-5:   #e06c75
+hue-5-2: #be5046
+hue-6:   #d19a66
+hue-6-2: #e6c07b
+
+*/.hljs{display:block;overflow-x:auto;padding:.5em;color:#abb2bf;background:#282c34}.hljs-comment,.hljs-quote{color:#5c6370;font-style:italic}.hljs-doctag,.hljs-formula,.hljs-keyword{color:#c678dd}.hljs-deletion,.hljs-name,.hljs-section,.hljs-selector-tag,.hljs-subst{color:#e06c75}.hljs-literal{color:#56b6c2}.hljs-addition,.hljs-attribute,.hljs-meta-string,.hljs-regexp,.hljs-string{color:#98c379}.hljs-built_in,.hljs-class .hljs-title{color:#e6c07b}.hljs-attr,.hljs-number,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-pseudo,.hljs-template-variable,.hljs-type,.hljs-variable{color:#d19a66}.hljs-bullet,.hljs-link,.hljs-meta,.hljs-selector-id,.hljs-symbol,.hljs-title{color:#61aeee}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}.hljs-link{text-decoration:underline}
