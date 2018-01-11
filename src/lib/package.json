@@ -1,0 +1,33 @@
+{
+  "name": "ng2-movable",
+  "version": "0.3.0",
+  "description": "Angular 2 movable directive",
+  "keywords": [
+    "angular",
+    "angular2",
+    "ng2",
+    "movable",
+    "draggable",
+    "directive",
+    "ng2-movable",
+    "angular-movable",
+    "angular2-movable"
+  ],
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spali/ng2-movable.git"
+  },
+  "bugs": {
+    "url": "https://github.com/spali/ng2-movable/issues"
+  },
+  "author": "Thomas Spalinger <spali>",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=2.2.3",
+    "@angular/common": ">=2.2.3"
+  }
+}

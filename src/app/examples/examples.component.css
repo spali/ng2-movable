@@ -1,0 +1,31 @@
+nav
+{
+    display: block;
+
+    height: 48px;
+    padding: 0 16px;
+
+    border-width: 0 0 1px;
+    border-style: solid;
+    border-color: #e1e1e1;
+}
+
+nav a
+{
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 48px;
+
+    margin-right: 20px;
+
+    cursor: pointer;
+    vertical-align: middle;
+    text-decoration: none;
+
+    color: #8f8f8f;
+}
+
+nav a.active
+{
+    color: #106cc8;
+}

@@ -1,0 +1,10 @@
+<nav>
+  <ng-container *ngFor="let example of examples">
+    <a *ngIf="example?.data?.title" routerLink="{{example.path}}" routerLinkActive="active">{{example.data.title}}</a>
+  </ng-container>
+</nav>
+<router-outlet (activate)="onActivate($event)"></router-outlet>
+<div class="hljs" style="background-color: #abb2bf; color: #282c34; font-family: monospace; padding: 0.1em; margin: 1.0em 0.1em 0.1em 0.1em; display: none;" #codeContainer>
+  <span>Code:</span>
+  <pre class="hljs" style="margin: 0" #code></pre>
+</div>

@@ -1,33 +1,25 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "baseUrl": "./",
+    "outDir": "./dist/tsc",
+    "sourceMap": true,
     "declaration": false,
-    "removeComments": true,
-    "noLib": false,
+    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": ["es2015"],
-    "sourceMap": true,
-    "pretty": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitUseStrict": false,
-    "noFallthroughCasesInSwitch": true,
+    "target": "es5",
     "typeRoots": [
-      "~/node_modules/@types",
-      "~/node_modules"
+      "node_modules/@types"
     ],
-    "types": [
-      "node"
+    "paths": {
+      "ng2-movable": [
+        "src/lib"
+      ]
+    },
+    "lib": [
+      "es2017",
+      "dom"
     ]
-  },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "src"
-  ],
-  "compileOnSave": false
+  }
 }
