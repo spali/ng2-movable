@@ -33,7 +33,7 @@
     "packagr": "ng-packagr -p ng-package.json",
     "publish": "npm run packagr && npm publish dist/lib",
     "publish:dev": "npm run packagr && npm publish --tag dev dist/lib",
-    "publish:demo": "ng build --prod --aot --output-path dist/gh-pages --base-href /ng2-movable/ && gh-pages -d dist/gh-pages"
+    "publish:demo": "ng build --prod --aot --output-path dist/gh-pages --base-href /ng2-movable/ && cpr dist/gh-pages/index.html dist/gh-pages/404.html && gh-pages -d dist/gh-pages"
   },
   "dependencies": {
     "@angular/common": "^5.0.0",
@@ -54,6 +54,7 @@
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
     "codelyzer": "^4.0.1",
+    "cpr": "^3.0.1",
     "gh-pages": "^1.1.0",
     "highlight.js": "^9.12.0",
     "jasmine-core": "~2.6.2",
