@@ -1,6 +1,6 @@
 {
   "name": "ng2-movable-app",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Angular 2 movable directive",
   "keywords": [
     "angular",
@@ -65,6 +65,7 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "ng-packagr": "^1.7.0",
     "protractor": "~5.1.2",
     "ts-node": "~3.2.0",
     "tslint": "~5.7.0",
