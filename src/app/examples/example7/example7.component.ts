@@ -8,7 +8,7 @@ const template = `<div movable [movableEnabled]="toggle" movableChildSelector=".
   <div class="move-me">
   <strong>New in v0.3.2!</strong>
   The directive can also apply all movable logic to a child element.<br>
-  This gives you super-power when hackig existing 3rd party controls.<br>
+  This gives you super-power when hacking existing 3rd party controls.<br>
   <button (click)="toggle = !toggle">toggle enabled state</button>
   </div>
 </div>`;
