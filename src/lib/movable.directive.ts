@@ -1,6 +1,6 @@
 import {
-  Directive, Input, HostListener, HostBinding, ContentChildren, QueryList,
-  AfterViewInit, AfterContentInit, ElementRef, ChangeDetectorRef
+  Directive, Input, HostListener, ContentChildren, QueryList,
+  AfterViewInit, AfterContentInit, ElementRef, ChangeDetectorRef, OnDestroy, RendererFactory2, Renderer2
 } from '@angular/core';
 import { MovableHandleDirective } from './movable-handle.directive';
 
@@ -90,49 +90,66 @@ export class Position {
 @Directive({
   selector: '[movable]'
 })
-export class MovableDirective implements AfterViewInit, AfterContentInit {
+export class MovableDirective implements AfterViewInit, AfterContentInit, OnDestroy {
 
   /** saved start position when moving starts. */
   protected startPosition: Position;
 
+
   /** true if moving is in progress. */
-  @HostBinding('class.movable-moving')
-  protected isMoving = false;
-
-  @HostBinding('class.movable-handle')
-  protected isHandle = false;
-
-  /** set position style on host to relative. */
-  @HostBinding('style.position')
-  protected positionStyle: string;
-
-  /** current Y position of the native element. */
-  @HostBinding('style.top.px')
-  protected positionTop: number;
-
-  /** current X position of the native element. */
-  @HostBinding('style.left.px')
-  protected positionLeft: number;
-
-  /** set class on host to indicate movable support. */
-  @HostBinding('class.movable')
-  protected isMovable = true;
-
-  /** set class depending on the status. */
-  @HostBinding('class.movable-enabled')
-  protected _movableEnabled = true;
-  protected get movableEnabled() {
-    return this._movableEnabled;
+  private _isMoving: boolean;
+  protected set isMoving(value: boolean) {
+    this._isMoving = value;
+    this.changeClass('movable-moving', value);
+  }
+  protected get isMoving() {
+    return this._isMoving;
   }
 
+  private _isHandle: boolean;
+  protected set isHandle(value: boolean) {
+    this._isHandle = true;
+    this.changeClass('movable-handle', value);
+  }
+  protected get isHandle() {
+    return this._isHandle;
+  }
+
+  /** set position style on host to relative. */
+  protected set positionStyle(value: string) {
+    this.setStyle('position', value);
+  }
+
+  /** current Y position of the native element. */
+  protected set positionTop(value: number) {
+    this.setStyle('top', value + 'px');
+  }
+
+  /** current X position of the native element. */
+  protected set positionLeft(value: number) {
+    this.setStyle('left', value + 'px');
+  }
+
+  /** set class on host to indicate movable support. */
+  protected set isMovable(value: boolean) {
+    this.changeClass('movable', value);
+  }
+
+  private _movableEnabled: boolean;
+  /** set class depending on the status. */
   /** optional input to toggle movable status. */
   @Input()
   protected set movableEnabled(value: boolean) {
     this._movableEnabled = value;
+    this.changeClass('movable-enabled', value);
+
     // propagate enabled status to handles
     if (this.handles.length > 0) {
       this.handles.forEach(handle => handle.movableEnabled = value);
     }
+  }
+  protected get movableEnabled() {
+    return this._movableEnabled;
   }
 
   protected movableName: string;
@@ -140,6 +157,10 @@ export class MovableDirective implements AfterViewInit, AfterContentInit {
   protected set movable(value: string) {
     this.movableName = value;
   }
+
+  /** set a CSS selector to apply all movable logic to the child */
+  @Input()
+  public movableChildSelector: string;
 
   @Input()
   public movableConstrained = true;
@@ -151,15 +172,41 @@ export class MovableDirective implements AfterViewInit, AfterContentInit {
   protected allHandles: QueryList<MovableHandleDirective>;
   protected handles: MovableHandleDirective[] = [];
 
-  constructor(public element: ElementRef, protected cd: ChangeDetectorRef) {
+  protected listener1: () => void;
+  protected listener2: () => void;
+
+  private renderer: Renderer2;
+
+  constructor(public element: ElementRef, protected cd: ChangeDetectorRef, rendererFactory: RendererFactory2) {
+    this.renderer = rendererFactory.createRenderer(null, null);
+
+    this.isMoving = false;
+    this.isHandle = false;
+    this.isMovable = true;
+    this.movableEnabled = true;
   }
 
   ngAfterViewInit() {
+
+    // don't use our own host element, but a child of it
+    if (this.movableChildSelector) {
+      const childEl = this.element.nativeElement.querySelector(this.movableChildSelector);
+      this.element = new ElementRef(childEl);
+    }
+
+    this.listener1 = this.renderer.listen(this.element.nativeElement, 'mousedown', e => this.startMoving(e));
+    this.listener2 = this.renderer.listen(this.element.nativeElement, 'touchstart', e => this.startMoving(e));
+
     const position = this.getStyle(this.element.nativeElement, 'position');
     if (position === 'static') {
       this.positionStyle = 'relative';
       this.cd.detectChanges();
     }
+  }
+
+  ngOnDestroy() {
+    if (this.listener1) { this.listener1(); }
+    if (this.listener2) { this.listener2(); }
   }
 
   ngAfterContentInit() {
@@ -181,11 +228,6 @@ export class MovableDirective implements AfterViewInit, AfterContentInit {
     }
   }
 
-  @HostListener('mousedown', ['$event'])
-  protected onMouseDown(event: MouseEvent) {
-    this.startMoving(event);
-  }
-
   @HostListener('document:mouseup', ['$event'])
   protected onMouseUp(event: MouseEvent) {
     this.stopMoving();
@@ -195,11 +237,6 @@ export class MovableDirective implements AfterViewInit, AfterContentInit {
   @HostListener('document:mousemove', ['$event'])
   protected onMouseMove(event: MouseEvent) {
     this.moveElement(event);
-  }
-
-  @HostListener('touchstart', ['$event'])
-  protected onTouchStart(event: ITouchEvent) {
-    this.startMoving(event);
   }
 
   @HostListener('document:touchend', ['$event'])
@@ -368,4 +405,15 @@ export class MovableDirective implements AfterViewInit, AfterContentInit {
     });
   }
 
+  private changeClass(name: string, value: boolean) {
+    if (value) {
+      this.renderer.addClass(this.element.nativeElement, name);
+    } else {
+      this.renderer.removeClass(this.element.nativeElement, name);
+    }
+  }
+
+  private setStyle(name: string, value: any) {
+    this.renderer.setStyle(this.element.nativeElement, name, value);
+  }
 }

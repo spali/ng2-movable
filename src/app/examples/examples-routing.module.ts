@@ -8,6 +8,8 @@ import { Example3Component } from './example3/example3.component';
 import { Example4Component } from './example4/example4.component';
 import { Example5Component } from './example5/example5.component';
 import { Example6Component } from './example6/example6.component';
+import { Example7Component } from './example7/example7.component';
+
 
 const routes: Routes = [
   {
@@ -20,7 +22,8 @@ const routes: Routes = [
       { path: 'example3', component: Example3Component, data: { title: 'Handle Example 2' } },
       { path: 'example4', component: Example4Component, data: { title: 'Relativ start position Example' } },
       { path: 'example5', component: Example5Component, data: { title: 'Constrained example' } },
-      { path: 'example6', component: Example6Component, data: { title: 'Disabled constrained example' } }
+      { path: 'example6', component: Example6Component, data: { title: 'Disabled constrained example' } },
+      { path: 'example7', component: Example7Component, data: { title: 'Move child' } }
     ]
   }
 ];
