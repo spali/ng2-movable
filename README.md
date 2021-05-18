@@ -1,3 +1,7 @@
+# ARCHIVED
+
+## use the [Angular Material Component Dev Kit (CDK)](https://material.angular.io/cdk/drag-drop/)
+
 # ng2-movable
 
 Demo: [https://spali.github.io/ng2-movable/](https://spali.github.io/ng2-movable/)
