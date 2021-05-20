@@ -1,7 +1,7 @@
 {
   "name": "ng2-movable-app",
-  "version": "0.3.1",
-  "description": "Angular 2 movable directive",
+  "version": "0.3.2",
+  "description": "Angular movable directive",
   "keywords": [
     "angular",
     "angular2",
@@ -22,6 +22,7 @@
     "url": "https://github.com/spali/ng2-movable/issues"
   },
   "author": "Thomas Spalinger <spali>",
+  "contributors": ["Johannes Hoppe <johannes.hoppe@angular.schule> (https://angular.schule)"],
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -47,6 +48,7 @@
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
+    "@angular-devkit/core": "^7.3.5",
     "@angular/cli": "1.6.3",
     "@angular/compiler-cli": "^5.0.0",
     "@angular/language-service": "^5.0.0",
